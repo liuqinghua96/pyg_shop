@@ -19,7 +19,7 @@
         <el-form-item class="button-group">
           <el-button type="primary"
                      @click="submit()">登录</el-button>
-          <el-button>重置</el-button>
+          <el-button @click="reset()">重置</el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -50,11 +50,15 @@ export default {
       this.$refs.form.validate(async valid => {
         if (valid) {
           const { data: { data, meta } } = await this.$http.post('login', this.form)
-          if (meta.status !== 200) return this.$message.error({message: meta.msg || '登录失败', duration: 1000})
+          if (meta.status !== 200) return this.$message.error({ message: meta.msg || '登录失败', duration: 1000 })
           sessionStorage.setItem('token', data.token)
           this.$router.push('/home')
         }
       })
+    },
+    reset () {
+      this.form.username = ''
+      this.form.password = ''
     }
   }
 }
