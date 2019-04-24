@@ -51,6 +51,7 @@ export default {
         if (valid) {
           const { data: { data, meta } } = await this.$http.post('login', this.form)
           if (meta.status !== 200) return this.$message.error({ message: meta.msg || '登录失败', duration: 1000 })
+          this.$message.success({ message: '登录成功', duration: 1000 })
           sessionStorage.setItem('token', data.token)
           this.$router.push('/home')
         }
