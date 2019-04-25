@@ -62,10 +62,15 @@
               <el-button size="mini"
                          icon="el-icon-delete"
                          @click="delUser(scope.row.id)"></el-button>
-              <el-button size="mini"
+              <el-tooltip class="item"
+                          effect="dark"
+                          content="分配角色"
+                          placement="top">
+                <el-button size="mini"
                          icon="el-icon-setting"
                          round
                          @click="setState(scope.row)"></el-button>
+              </el-tooltip>
             </el-button-group>
           </template>
         </el-table-column>
