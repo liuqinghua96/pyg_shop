@@ -22,10 +22,12 @@ export default {
       editForm: {},
       rules: {
         attr_name: [
-          {required: true, message: '参数名不能为空', tigger: 'blur'}
+          { required: true, message: '参数名不能为空', tigger: 'blur' }
         ]
       },
-      addTagInputValue: ''
+      // 参数选项的输入框内容
+      addTagInputValue: '',
+      editTagInputValue: ''
     }
   },
   computed: {
@@ -44,9 +46,7 @@ export default {
       this.getParams()
     },
     async getData () {
-      const {
-        data: { data, meta }
-      } = await this.$http.get('categories', { params: { type: 3 } })
+      const {data: { data, meta }} = await this.$http.get('categories', { params: { type: 3 } })
       if (meta.status !== 200) return this.$message.error(meta.msg)
       this.optionsList = data
     },
@@ -59,17 +59,18 @@ export default {
       const len = this.selectValue.length
       if (len === 3) {
         this.disabled = false
-        const {data: {data, meta}} = await this.$http.get(`categories/${this.id}/attributes`, {params: {sel: this.activeName}})
+        const {data: {data, meta}} = await this.$http.get(`categories/${this.id}/attributes`, {params: { sel: this.activeName }})
         if (meta.status !== 200) return this.$message.error(meta.msg)
-        if (this.activeName === 'many') {
-          data.forEach(element => {
+        data.forEach(element => {
+          if (this.activeName === 'many') {
             element.attr_vals = element.attr_vals.length ? element.attr_vals.split(',') : []
-            // 设置input与el-tag的显示与隐藏
-            element.inputShow = false
-          })
-        }
+          }
+          // 设置input与el-tag的显示与隐藏
+          element.inputShow = false
+        })
         this.paramsArr = data
       } else {
+        this.paramsArr = []
         this.disabled = true
         this.selectValue = []
       }
@@ -83,7 +84,10 @@ export default {
     addSubmit () {
       this.$refs.addForm.validate(async valid => {
         if (valid) {
-          const {data: {meta}} = await this.$http.post(`categories/${this.id}/attributes`, {attr_name: this.addForm.attr_name, attr_sel: this.activeName})
+          const {data: { meta }} = await this.$http.post(`categories/${this.id}/attributes`, {
+            attr_name: this.addForm.attr_name,
+            attr_sel: this.activeName
+          })
           if (meta.status !== 201) return this.$message.error(meta.msg)
           this.$message.success('添加参数成功')
           this.dialogAddVisible = false
@@ -96,42 +100,48 @@ export default {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
-      }).then(async () => {
-        const {data: {meta}} = await this.$http.delete(`categories/${this.id}/attributes/${attrId}`)
-        if (meta.status !== 200) return this.$message.error(meta.msg)
-        this.$message.success('删除参数成功')
-        this.getParams()
-      }).catch(() => {
-        this.$message({
-          type: 'info',
-          message: '已取消删除'
-        })
       })
+        .then(async () => {
+          const {data: { meta }} = await this.$http.delete(`categories/${this.id}/attributes/${attrId}`)
+          if (meta.status !== 200) return this.$message.error(meta.msg)
+          this.$message.success('删除参数成功')
+          this.getParams()
+        })
+        .catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          })
+        })
     },
     async delTag (row, attrId) {
       row.attr_vals.splice(attrId, 1)
-      const {data: {meta}} = await this.$http.put(`categories/${this.id}/attributes/${attrId}`, {
-        attr_name: row.attr_name,
-        attr_sel: row.attr_sel,
-        attr_vals: row.attr_vals.join(',')
-      })
-      if (meta.status !== 200) return this.$message.error(meta.msg)
+      const {data: { meta }} = await this.$http.put(`categories/${this.id}/attributes/${row.attr_id}`,
+        {
+          attr_name: row.attr_name,
+          attr_sel: row.attr_sel,
+          attr_vals: row.attr_vals.join(',')
+        }
+      )
+      if (meta.status !== 200) return this.$message.error('11111111111')
       this.$message.success('删除选项成功')
     },
     async editParams (attrId) {
       this.dialogEditVisible = true
-      const {data: {data, meta}} = await this.$http.get(`categories/${this.id}/attributes/${attrId}`)
+      const {data: { data, meta }} = await this.$http.get(`categories/${this.id}/attributes/${attrId}`)
       if (meta.status !== 200) return this.$message.error(meta.msg)
       this.editForm = data
     },
     editSubmit () {
       this.$refs.editForm.validate(async valid => {
         if (valid) {
-          const {data: {meta}} = await this.$http.put(`categories/${this.id}/attributes/${this.editForm.attr_id}`, {
-            attr_name: this.editForm.attr_name,
-            attr_sel: this.editForm.attr_sel,
-            attr_vals: this.editForm.attr_vals
-          })
+          const {data: { meta }} = await this.$http.put(`categories/${this.id}/attributes/${this.editForm.attr_id}`,
+            {
+              attr_name: this.editForm.attr_name,
+              attr_sel: this.editForm.attr_sel,
+              attr_vals: this.editForm.attr_vals
+            }
+          )
           if (meta.status !== 200) return this.$message.error(meta.msg)
           this.getParams()
           this.dialogEditVisible = false
@@ -140,25 +150,47 @@ export default {
     },
     clickTag (row) {
       row.inputShow = true
-      this.$nextTick(() => {
-        this.$refs['input' + row.attr_id].focus()
-      })
+      if (this.activeName === 'only') {
+        this.editTagInputValue = row.attr_vals
+        this.$nextTick(() => {
+          this.$refs['inputOnly' + row.attr_id].focus()
+        })
+      } else {
+        this.$nextTick(() => {
+          this.$refs['inputMany' + row.attr_id].focus()
+        })
+      }
     },
     async addTag (row) {
       if (this.addTagInputValue !== '') {
         row.attr_vals.push(this.addTagInputValue)
-        const {data: {meta}} = await this.$http.put(`categories/${this.id}/attributes/${row.attr_id}`, {
+        const {data: {meta}} = await this.$http.put(`categories/${this.id}/attributes/${row.attr_id}`,
+          {
+            attr_name: row.attr_name,
+            attr_sel: row.attr_sel,
+            attr_vals: row.attr_vals.join(',')
+          }
+        )
+        if (meta.status !== 200) return this.$message.error(meta.msg)
+        this.$message.success('添加成功')
+      }
+      this.addTagInputValue = ''
+      row.inputShow = false
+    },
+    async editTag (row) {
+      if (this.editTagInputValue !== '') {
+        row.attr_vals = this.editTagInputValue
+        const {data: { meta }} = await this.$http.put(`categories/${this.id}/attributes/${row.attr_id}`, {
           attr_name: row.attr_name,
           attr_sel: row.attr_sel,
-          attr_vals: row.attr_vals.join(',')
-        })
+          attr_vals: row.attr_vals
+        }
+        )
         if (meta.status !== 200) return this.$message.error(meta.msg)
-        row.inputShow = false
-        this.addTagInputValue = ''
-        // this.getParams()
-      } else {
-        row.inputShow = false
+        this.$message.success('修改成功')
       }
+      this.editTagInputValue = ''
+      row.inputShow = false
     }
   },
   mounted () {

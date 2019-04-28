@@ -40,7 +40,7 @@
             <el-table-column type="expand">
               <template slot-scope="scope">
                 <el-tag v-for="(item, i) in scope.row.attr_vals"
-                        :key="item.attr_id"
+                        :key="i"
                         size="normal"
                         closable
                         @close="delTag(scope.row, i)">
@@ -48,7 +48,7 @@
                 </el-tag>
                 <el-input v-if="scope.row.inputShow"
                           style="width:100px"
-                          :ref="'input'+scope.row.attr_id"
+                          :ref="'inputMany'+scope.row.attr_id"
                           v-model="addTagInputValue"
                           @blur="addTag(scope.row)"
                           @keyup.native.enter="addTag(scope.row)"></el-input>
@@ -95,8 +95,17 @@
             </el-table-column>
             <el-table-column label="属性值">
               <template slot-scope="scope">
+                <el-input v-if="scope.row.inputShow"
+                          style="width:300px"
+                          :ref="'inputOnly'+scope.row.attr_id"
+                          v-model="editTagInputValue"
+                          @keyup.native.enter="editTag(scope.row)"
+                          @blur="editTag(scope.row)"></el-input>
                 <el-tag size="normal"
-                        style="width: 300px">{{scope.row.attr_vals}}</el-tag>
+                        v-else
+                        style="width: 300px"
+                        :disable-transitions='true'
+                        @click="clickTag(scope.row)">{{scope.row.attr_vals}}</el-tag>
               </template>
             </el-table-column>
             <el-table-column label="操作"
@@ -168,6 +177,9 @@ export default {
 </script>
 <style scoped>
 .el-tag {
+  margin: 5px;
+}
+.el-input {
   margin: 5px;
 }
 </style>
