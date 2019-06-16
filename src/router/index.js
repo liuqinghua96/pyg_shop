@@ -9,6 +9,7 @@ import Roles from '@/components/rights/Roles'
 import Categories from '@/components/goods/Categories'
 import Params from '@/components/goods/Params'
 import Goods from '@/components/goods/Goods'
+import AddGoods from '@/components/goods/AddGoods'
 import Orders from '@/components/Orders/Orders'
 
 Vue.use(Router)
@@ -16,7 +17,7 @@ const router = new Router({
   routes: [
     {
       path: '/',
-      redirect: '/login'
+      redirect: '/home'
     },
     {
       path: '/login',
@@ -36,6 +37,7 @@ const router = new Router({
         { path: '/categories', name: 'categories', component: Categories },
         { path: '/params', name: 'params', component: Params },
         { path: '/goods', name: 'goods', component: Goods },
+        { path: '/goods/addGoods', name: 'addGoods', component: AddGoods },
         { path: '/orders', name: 'orders', component: Orders }
       ]
     }

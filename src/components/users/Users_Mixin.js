@@ -82,7 +82,7 @@ export default {
         this.$refs.addForm.resetFields()
       })
     },
-    async delUser (id) {
+    delUser (id) {
       this.$confirm('永久删除该用户?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',

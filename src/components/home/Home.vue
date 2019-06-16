@@ -18,7 +18,7 @@
                  :unique-opened="true"
                  :collapse="collapse"
                  :collapse-transition="false"
-                 :default-active="$route.name"
+                 :default-active="'/'+$route.name"
                  style="border: 0;margin-top: 5px;width: 100%"
                  text-color="#fff"
                  active-text-color="#ffd04b"
@@ -34,7 +34,7 @@
               <el-menu-item v-for="subItem in item.children"
                             :key="subItem.id"
                             class="option"
-                            :index="subItem.path">
+                            :index="'/' + subItem.path">
                 <i class="el-icon-menu"></i>
                 {{subItem.authName}}
               </el-menu-item>

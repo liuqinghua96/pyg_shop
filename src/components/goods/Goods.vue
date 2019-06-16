@@ -22,7 +22,8 @@
         <!-- 添加商品 -->
         <el-col :span="18">
           <el-button type="primary"
-                     plain>添加商品</el-button>
+                     plain
+                     @click="showAddGood()">添加商品</el-button>
         </el-col>
       </el-row>
       <!-- 用户信息表格 -->

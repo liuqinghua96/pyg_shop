@@ -42,6 +42,9 @@ export default {
         .catch(() => {
           this.$message.info('已取消删除')
         })
+    },
+    showAddGood () {
+      this.$router.push('/goods/addGoods')
     }
   },
   mounted () {
