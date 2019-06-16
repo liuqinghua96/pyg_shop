@@ -46,16 +46,10 @@
           </template>
         </el-table-column>
         <el-table-column label="操作">
-          <template slot-scope="scope">
-            <el-button-group>
-              <el-button size="mini"
-                         icon="el-icon-edit"
-                         round></el-button>
-              <el-button size="mini"
-                         icon="el-icon-location"
-                         round></el-button>
-            </el-button-group>
-          </template>
+          <el-button size="mini"
+                      icon="el-icon-location"
+                      round
+                      @click="dialogVisible=true"></el-button>
         </el-table-column>
       </el-table>
       <!-- 分页 -->
@@ -67,6 +61,17 @@
                      @current-change="changePager">
       </el-pagination>
     </el-card>
+    <el-dialog title="物流详情"
+               :visible.sync="dialogVisible"
+               width="30%">
+      <el-timeline>
+        <el-timeline-item v-for="(activity, index) in activities"
+                          :key="index"
+                          :timestamp="activity.time">
+          {{activity.context}}
+        </el-timeline-item>
+      </el-timeline>
+    </el-dialog>
   </div>
 </template>
 <script>
@@ -76,5 +81,4 @@ export default {
 }
 </script>
 <style scoped>
-
 </style>
