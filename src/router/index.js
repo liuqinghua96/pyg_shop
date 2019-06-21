@@ -1,17 +1,17 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import Login from '@/components/Login'
-import Home from '@/components/home/Home'
-import Welcome from '@/components/home/Welcome'
-import Users from '@/components/users/Users'
-import Rights from '@/components/rights/Rights'
-import Roles from '@/components/rights/Roles'
-import Categories from '@/components/goods/Categories'
-import Params from '@/components/goods/Params'
-import Goods from '@/components/goods/Goods'
-import AddGoods from '@/components/goods/AddGoods'
-import Orders from '@/components/orders/Orders'
-import Report from '@/components/report/Report'
+const Login = () => import('@/components/Login')
+const Home = () => import('@/components/home/Home')
+const Welcome = () => import('@/components/home/Welcome')
+const Users = () => import('@/components/users/Users')
+const Rights = () => import('@/components/rights/Rights')
+const Roles = () => import('@/components/rights/Roles')
+const Categories = () => import('@/components/goods/Categories')
+const Params = () => import('@/components/goods/Params')
+const Goods = () => import('@/components/goods/Goods')
+const AddGoods = () => import('@/components/goods/AddGoods')
+const Orders = () => import('@/components/orders/Orders')
+const Report = () => import('@/components/report/Report')
 
 Vue.use(Router)
 const router = new Router({
